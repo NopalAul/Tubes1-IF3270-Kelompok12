@@ -29,3 +29,40 @@ class NormalInitialization(Initialization):
 
     def __call__(self, shape):
         return self.rng.normal(self.mean, np.sqrt(self.variance), shape)
+    
+# Bonus:
+class XavierInitialization(Initialization):
+    def __init__(self, distribution='uniform', seed=None):
+        self.distribution = distribution
+        self.seed = seed
+        self.rng = np.random.RandomState(seed)
+    
+    def __call__(self, shape):
+        n_in, n_out = shape
+        std_deviation = np.sqrt((2 / (n_in + n_out)))
+
+        if self.distribution == 'normal':
+            return self.rng.normal(0, std_deviation, shape)
+        elif self.distribution == 'uniform':
+            limit = std_deviation * np.sqrt(3) # std dev jadi akar 6
+            return self.rng.uniform(-limit, limit, shape)
+        else:
+            raise ValueError('Distribution harus berupa "normal" atau "uniform"')
+        
+class HeInitialization(Initialization):
+    def __init__(self, distribution='normal', seed=None):
+        self.distribution = distribution
+        self.seed = seed
+        self.rng = np.random.RandomState(seed)
+
+    def __call__(self, shape):
+        n_in, _ = shape
+        std_deviation = np.sqrt(2 / n_in)
+
+        if self.distribution == 'normal':
+            return self.rng.normal(0, std_deviation, shape)
+        elif self.distribution == 'uniform':
+            limit = std_deviation * np.sqrt(3) # std dev jadi akar 6
+            return self.rng.uniform(-limit, limit, shape)
+        else:
+            raise ValueError('Distribution harus berupa "normal" atau "uniform"')
