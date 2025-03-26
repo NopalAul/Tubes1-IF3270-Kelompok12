@@ -9,14 +9,14 @@ import matplotlib.cm as cm
 from layer import Layer
 
 class FFNN:
-    def __init__(self, layer_sizes, initialization, activations, loss):
+    def __init__(self, layer_sizes, initializations, activations, loss):
         self.layer_sizes = layer_sizes
         self.loss = loss
 
         # nanti bikin list layernya..
         self.layers = []
         for i in range(len(layer_sizes) - 1):
-            self.layers.append(Layer(layer_sizes[i], layer_sizes[i+1], activations[i], initialization))
+            self.layers.append(Layer(layer_sizes[i], layer_sizes[i+1], activations[i], initializations[i]))
 
         # histori proses pelatihan
         self.history = {
