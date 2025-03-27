@@ -7,6 +7,8 @@ import networkx as nx
 import matplotlib.cm as cm
 
 from layer import Layer
+from activation import Softmax
+from loss import CategoricalCrossEntropy
 
 class FFNN:
     def __init__(self, layer_sizes, initializations, activations, loss):
@@ -34,8 +36,13 @@ class FFNN:
     def backward(self, x, y):
         # backward pass di seluruh layer
         y_pred = self.forward(x)
-        grad = self.loss.derivative(y, y_pred)
-
+        
+        if isinstance(self.layers[-1].activation, Softmax) and \
+        isinstance(self.loss, CategoricalCrossEntropy):
+            grad = y_pred - y # sumber: https://medium.com/data-science/derivative-of-the-softmax-function-and-the-categorical-cross-entropy-loss-ffceefc081d1
+        else:
+            grad = self.loss.derivative(y, y_pred)
+        
         for layer in reversed(self.layers):
             grad = layer.backward(grad)
 
