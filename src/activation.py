@@ -52,3 +52,20 @@ class Softmax(Activation):
         # masih bingung
         return np.ones_like(x)
 
+# Implementasi Bonus: Tambahan dua kelas aktivasi
+class LeakyReLU(Activation):
+    # f(x) = x jika x > 0, alpha * x jika x <= 0
+    def __call__(self, x):
+        return np.where(x > 0, x, 0.01 * x)
+
+    def derivative(self, x):
+        return np.where(x > 0, 1, 0.01)
+
+
+class ELU(Activation):
+    # f(x) = x jika x > 0, alpha * (e^x - 1) jika x <= 0
+    def __call__(self, x):
+        return np.where(x > 0, x, 1 * (np.exp(x) - 1))
+
+    def derivative(self, x):
+        return np.where(x > 0, 1, self.__call__(x) + 1)
