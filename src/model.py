@@ -139,8 +139,9 @@ class FFNN:
                 layer_nodes_list.append(node_id)
             layer_nodes.append(layer_nodes_list)
         
-        # edges (label bobot)
+        # edges (label bobot dan gradien)
         weights = []
+        gradients = []
         for l in range(len(self.layers)):
             layer = self.layers[l]
             for i, prev_node in enumerate(layer_nodes[l]):
@@ -149,8 +150,10 @@ class FFNN:
                     grad = layer.weights_grad[i, j]
                     G.add_edge(prev_node, next_node, weight=weight, gradient=grad)
                     weights.append(abs(weight))
+                    gradients.append(abs(grad))
         
         weights_norm = (np.array(weights) - np.min(weights)) / (np.max(weights) - np.min(weights))
+        gradients_norm = (np.array(gradients) - np.min(gradients)) / (np.max(gradients) - np.min(gradients))
         
         fig, ax = plt.subplots(figsize=(16, 12), dpi=100)
         plt.subplots_adjust(bottom=0.1)
@@ -176,9 +179,9 @@ class FFNN:
                                         arrows=True, 
                                         arrowsize=10)
         
-        edge_labels = {(u, v): f"W:{G[u][v]['weight']:.2f}" 
-                   for u, v in G.edges()}
-    
+        edge_labels = {(u, v): f"W:{G[u][v]['weight']:.2f}\nG:{G[u][v]['gradient']:.2f}" 
+                for u, v in G.edges()}
+
         nx.draw_networkx_edge_labels(G, pos, 
                                     ax=ax,
                                     edge_labels=edge_labels, 
