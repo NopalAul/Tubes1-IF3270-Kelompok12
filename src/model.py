@@ -46,13 +46,13 @@ class FFNN:
         for layer in reversed(self.layers):
             grad = layer.backward(grad)
 
-    def update_weights(self, learning_rate):
+    def update_weights(self, learning_rate, l1_lambda=0.0, l2_lambda=0.0):
         # update bobot di seluruh layer
         for layer in self.layers:
-            layer.update_weights(learning_rate)
+            layer.update_weights(learning_rate, l1_lambda, l2_lambda)
 
 
-    def train(self, x_train, y_train, x_y_val=None, batch_size=32, learning_rate=0.01, epochs=10, verbose=1):
+    def train(self, x_train, y_train, x_y_val=None, batch_size=32, learning_rate=0.01, epochs=10, verbose=1, l1_lambda=0.0, l2_lambda=0.0):
         # Batch size, Learning rate, Jumlah epoch, Verbose
         # x_y_val buat validation loss
 
@@ -79,7 +79,7 @@ class FFNN:
                 epoch_loss += batch_loss * len(x_batch)
 
                 self.backward(x_batch, y_batch)
-                self.update_weights(learning_rate)
+                self.update_weights(learning_rate, l1_lambda, l2_lambda)
 
                 if verbose == 1:
                     pbar.update(len(x_batch))
