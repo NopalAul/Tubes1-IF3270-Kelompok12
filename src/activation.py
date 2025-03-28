@@ -56,7 +56,9 @@ class Softmax(Activation):
 class LeakyReLU(Activation):
     # f(x) = x jika x > 0, alpha * x jika x <= 0
     def __call__(self, x):
-        return np.where(x > 0, x, 0.01 * x)
+        alpha = 0.01
+        x_clipped = np.clip(x, -50, 50)  # Biar ga overflow
+        return np.maximum(alpha * x_clipped, x_clipped)
 
     def derivative(self, x):
         return np.where(x > 0, 1, 0.01)
@@ -65,7 +67,9 @@ class LeakyReLU(Activation):
 class ELU(Activation):
     # f(x) = x jika x > 0, alpha * (e^x - 1) jika x <= 0
     def __call__(self, x):
-        return np.where(x > 0, x, 1 * (np.exp(x) - 1))
+        alpha = 1
+        x_clipped = np.clip(x, -50, 50)  # Biar ngga overflow
+        return np.where(x > 0, x, alpha * (np.exp(x_clipped) - 1))
 
     def derivative(self, x):
         return np.where(x > 0, 1, self.__call__(x) + 1)
