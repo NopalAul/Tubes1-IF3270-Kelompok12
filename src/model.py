@@ -9,6 +9,7 @@ import matplotlib.cm as cm
 from layer import Layer
 from activation import Softmax
 from loss import CategoricalCrossEntropy
+from initialization import HeInitialization
 
 class FFNN:
     def __init__(self, layer_sizes, initializations, activations, loss):
@@ -18,7 +19,9 @@ class FFNN:
         # nanti bikin list layernya..
         self.layers = []
         for i in range(len(layer_sizes) - 1):
-            self.layers.append(Layer(layer_sizes[i], layer_sizes[i+1], activations[i], initializations[i]))
+            weight_bias_initialization = initializations[i] if initializations[i] else HeInitialization() # default
+
+            self.layers.append(Layer(layer_sizes[i], layer_sizes[i+1], activations[i], weight_bias_initialization))
 
         # histori proses pelatihan
         self.history = {
@@ -37,11 +40,8 @@ class FFNN:
         # backward pass di seluruh layer
         y_pred = self.forward(x)
         
-        if isinstance(self.layers[-1].activation, Softmax) and \
-        isinstance(self.loss, CategoricalCrossEntropy):
-            grad = y_pred - y # sumber: https://medium.com/data-science/derivative-of-the-softmax-function-and-the-categorical-cross-entropy-loss-ffceefc081d1
-        else:
-            grad = self.loss.derivative(y, y_pred)
+        # gradien dr loss function 
+        grad = self.loss.derivative(y, y_pred)
         
         for layer in reversed(self.layers):
             grad = layer.backward(grad)
@@ -84,7 +84,7 @@ class FFNN:
                 if verbose == 1:
                     pbar.update(len(x_batch))
                 
-            epoch_loss /= n_samples
+            epoch_loss /= n_samples # rata rata training loss
             self.history['train_loss'].append(epoch_loss)
 
             if x_y_val is not None:

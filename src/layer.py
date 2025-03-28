@@ -1,6 +1,7 @@
 import numpy as np
 
 from activation import Softmax
+from initialization import HeInitialization
 
 class Layer:
     """Neural network layer class"""
@@ -8,15 +9,19 @@ class Layer:
         self.input_size = input_size
         self.output_size = output_size
         self.activation = activation
+
+        # default
+        self.weight_bias_initializer = initializer or HeInitialization()
         
-        self.weights = initializer((input_size, output_size))
-        self.biases = initializer((1, output_size))
+        self.weights = self.weight_bias_initializer((input_size, output_size))
+        self.biases = self.weight_bias_initializer((1, output_size))
         
-        self.weights_grad = None
-        self.biases_grad = None
+        self.weights_grad = np.zeros_like(self.weights)
+        self.biases_grad = np.zeros_like(self.biases)
         
         self.input = None
         self.output_before_activation = None
+        self.output = None
 
     def forward(self, x):
         """Forward pass through the layer"""
