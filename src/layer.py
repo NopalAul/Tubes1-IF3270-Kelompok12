@@ -52,8 +52,17 @@ class Layer:
         
         return grad_prev
 
-    def update_weights(self, learning_rate):
-        """Update weights using gradient descent"""
+    def update_weights(self, learning_rate, l1_lambda=0.0, l2_lambda=0.0):
+        # Regularisasi L1: Tambahin nilai sign ke gradien 
+        if l1_lambda > 0:
+            # Rumus Regularisasi L1
+            self.weights_grad += l1_lambda * np.sign(self.weights)
+
+        # Regularisasi L2: Tambahin faktor bobot ke gradien   
+        if l2_lambda > 0:
+            # Rumus Regularisasi L2
+            self.weights_grad += l2_lambda * 2 * self.weights
+        
         # Update bobot dan bias dengan gradient descent: weights_baru = weights_lama - learning_rate * gradien
         self.weights -= learning_rate * self.weights_grad
         self.biases -= learning_rate * self.biases_grad
