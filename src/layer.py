@@ -25,36 +25,35 @@ class Layer:
 
     def forward(self, x):
         """Forward pass through the layer"""
-        # Menyimpan input untuk digunakan dalam backpropagation
+        # Simpan input untuk digunakan dalam backpropagation
         self.input = x
-        # Menghitung output = input * weights + biases
+        # Ngitung output = input * weights + biases
         self.output_before_activation = np.dot(x, self.weights) + self.biases
-        # Menerapkan fungsi aktivasi pada output
+        # Fungsi aktivasi diterapin ke output
         return self.activation(self.output_before_activation)
 
     def backward(self, grad_output):
         """Backward pass through the layer"""
         
-        # Penanganan khusus untuk Softmax karena derivatifnya sudah dihitung dalam CrossEntropy
+        # Softmax ditangani khusus sebab derivatifnya udah dihitung di CrossEntropy
         if isinstance(self.activation, Softmax):
             grad_input = grad_output
         else:
-            # Menghitung gradien dengan aturan rantai: grad_output * derivative_activation
+            # Hitung gradien dengan aturan rantai
             grad_input = grad_output * self.activation.derivative(self.output_before_activation)
         
-        # Menghitung gradien untuk weights: input.T * grad_input
+        # Hitung gradien untuk weights: input.T * grad_input
         self.weights_grad = np.dot(self.input.T, grad_input)
-        # Menghitung gradien untuk biases: sum(grad_input)
+        # Hitung gradien untuk bias: sum(grad_input)
         self.biases_grad = np.sum(grad_input, axis=0, keepdims=True)
         
-        # Menghitung gradien untuk layer sebelumnya: grad_input * weights.T
+        # Hitung gradien untuk layer sebelumnya: grad_input * weights.T
         grad_prev = np.dot(grad_input, self.weights.T)
         
         return grad_prev
 
     def update_weights(self, learning_rate):
         """Update weights using gradient descent"""
-        # Memperbarui bobot dan bias menggunakan metode gradient descent
-        # weights_baru = weights_lama - learning_rate * gradien
+        # Update bobot dan bias dengan gradient descent: weights_baru = weights_lama - learning_rate * gradien
         self.weights -= learning_rate * self.weights_grad
         self.biases -= learning_rate * self.biases_grad

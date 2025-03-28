@@ -1,5 +1,6 @@
 import numpy as np
 
+# Membuat superclass
 class Activation:
     def __call__(self, x): # callable object, jadi object dipanggil seperti fungsi
         pass
@@ -8,7 +9,7 @@ class Activation:
         pass
 
 class Linear(Activation):
-    # Linear: f(x) = x
+    # f(x) = x
     def __call__(self, x):
         return x
     
@@ -16,7 +17,7 @@ class Linear(Activation):
         return np.ones_like(x)
     
 class ReLU(Activation):
-    # ReLU: f(x) = max(0, x)
+    # f(x) = max(0, x)
     def __call__(self, x):
         return np.maximum(0, x)
     
@@ -24,7 +25,7 @@ class ReLU(Activation):
         return np.where(x <= 0, 0, 1)
 
 class Sigmoid(Activation):
-    # Sigmoid: f(x) = 1 / (1 + e^(-x))
+    # f(x) = 1 / (1 + e^(-x))
     def __call__(self, x):
         return 1 / (1 + np.exp(-np.clip(x, 
         -500, 500))) # np.clip biar ga overflow
@@ -34,7 +35,7 @@ class Sigmoid(Activation):
         return s * (1 - s)
     
 class Tanh(Activation):
-    # Tanh: f(x) = (e^x - e^(-x)) / (e^x + e^(-x)) atau tanh(x) (numpy)
+    # f(x) = (e^x - e^(-x)) / (e^x + e^(-x)) atau tanh(x) (numpy)
     def __call__(self, x):
         return np.tanh(x)
     
@@ -42,7 +43,7 @@ class Tanh(Activation):
         return 1 - np.power(np.tanh(x), 2)
     
 class Softmax(Activation):
-    # Softmax: f(x)_i = e^(x_i) / sum(e^(x_j)) 
+    # f(x)_i = e^(x_i) / sum(e^(x_j)) 
     def __call__(self, x):
         x_shifted = x - np.max(x, axis=1, keepdims=True)
         exp_x = np.exp(x_shifted)
