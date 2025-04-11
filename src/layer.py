@@ -2,13 +2,15 @@ import numpy as np
 
 from activation import Softmax
 from initialization import HeInitialization
+from rmsnorm import RMSNorm  # Import modul baru
 
 class Layer:
     """Neural network layer class"""
-    def __init__(self, input_size, output_size, activation, initializer):
+    def __init__(self, input_size, output_size, activation, initializer, normalization=None):
         self.input_size = input_size
         self.output_size = output_size
         self.activation = activation
+        self.normalization = normalization(output_size) if normalization else None
 
         # default
         self.weight_bias_initializer = initializer or HeInitialization()
@@ -29,8 +31,10 @@ class Layer:
         self.input = x
         # Ngitung output = input * weights + biases
         self.output_before_activation = np.dot(x, self.weights) + self.biases
-        # Fungsi aktivasi diterapin ke output
+        if self.normalization:
+            self.output_before_activation = self.normalization.forward(self.output_before_activation)
         return self.activation(self.output_before_activation)
+
 
     def backward(self, grad_output):
         """Backward pass through the layer"""
@@ -42,6 +46,9 @@ class Layer:
             # Hitung gradien dengan aturan rantai
             grad_input = grad_output * self.activation.derivative(self.output_before_activation)
         
+        if self.normalization:
+            grad_input = self.normalization.backward(grad_input)
+
         # Hitung gradien untuk weights: input.T * grad_input
         self.weights_grad = np.dot(self.input.T, grad_input)
         # Hitung gradien untuk bias: sum(grad_input)
@@ -66,3 +73,7 @@ class Layer:
         # Update bobot dan bias dengan gradient descent: weights_baru = weights_lama - learning_rate * gradien
         self.weights -= learning_rate * self.weights_grad
         self.biases -= learning_rate * self.biases_grad
+
+        if self.normalization:
+            self.normalization.update_weights(learning_rate)
+

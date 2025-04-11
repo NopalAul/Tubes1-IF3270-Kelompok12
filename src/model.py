@@ -12,7 +12,7 @@ from loss import CategoricalCrossEntropy
 from initialization import HeInitialization
 
 class FFNN:
-    def __init__(self, layer_sizes, initializations, activations, loss):
+    def __init__(self, layer_sizes, initializations, activations, loss, normalization=[None, None, None]):
         self.layer_sizes = layer_sizes
         self.loss = loss
 
@@ -21,7 +21,7 @@ class FFNN:
         for i in range(len(layer_sizes) - 1):
             weight_bias_initialization = initializations[i] if initializations[i] else HeInitialization() # default
 
-            self.layers.append(Layer(layer_sizes[i], layer_sizes[i+1], activations[i], weight_bias_initialization))
+            self.layers.append(Layer(layer_sizes[i], layer_sizes[i+1], activations[i], weight_bias_initialization, normalization[i]))
 
         # histori proses pelatihan
         self.history = {
