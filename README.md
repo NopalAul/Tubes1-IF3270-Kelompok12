@@ -22,6 +22,7 @@ Untuk menjalankan proyek ini, Anda memerlukan:
 - Matplotlib
 - scikit-learn
 - tqdm
+- networkx
 
 ## Installation
 
