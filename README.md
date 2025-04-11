@@ -26,14 +26,14 @@ Untuk menjalankan proyek ini, Anda memerlukan:
 
 ## Installation
 
-1. Clone this repository:
+1. Clone Repository ini:
 
     ```bash
     git clone https://github.com/NopalAul/Tubes1-IF3270-Kelompok12.git
     cd Tubes1-IF3270-Kelompok12
     ```
 
-2. Install the required packages:
+2. Install dependencies yang diperlukan:
 
     ```bash
     pip install -r requirements.txt
